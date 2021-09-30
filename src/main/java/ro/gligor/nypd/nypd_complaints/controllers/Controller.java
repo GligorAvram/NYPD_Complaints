@@ -12,7 +12,7 @@ import java.util.Map;
 @RestController
 public class Controller {
 
-    private CsvReader csvHandler = new CsvReader("src\\Book1.csv");
+    private CsvReader csvHandler = CsvReader.getInstance("src\\Book1.csv");
 
     @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping("dataset/stats/total")
@@ -35,8 +35,6 @@ public class Controller {
 
     @DeleteMapping(value = "/dataset/{id}")
     public boolean deleteMapping(@PathVariable("id") Long id){
-        //todo
-
-        return false;
+        return csvHandler.deleteOffense(id);
     }
 }

@@ -21,15 +21,24 @@ import java.util.Map;
 
 public class CsvReader {
 
+    public static CsvReader reader = null;
+
     private List<Complaint> csvRows;
     private Map<Integer, Integer> offenseTypeTotals;
     private String filePath;
     private String[] headers;
 
-    public CsvReader(String path) {
+    private CsvReader(String path) {
         this.filePath = path;
         csvRows = readFromCsv(filePath);
         offenseTypeTotals = populateOffenseTypes();
+    }
+
+    public static CsvReader getInstance(String path){
+        if(reader == null){
+            return new CsvReader(path);
+        }
+        return reader;
     }
 
     private Map<Integer, Integer> populateOffenseTypes() {
@@ -62,6 +71,7 @@ public class CsvReader {
     }
 
     public Map<Integer, Integer> getOffenses() {
+
         return offenseTypeTotals;
     }
 
@@ -75,13 +85,44 @@ public class CsvReader {
 
         csvRows.add(newComplaint);
 
+        writeToCsv();
+
         if(offenseTypeTotals.containsKey(ky)){
             offenseTypeTotals.put(ky, offenseTypeTotals.get(ky) + 1);
         }
         else{
             offenseTypeTotals.put(ky, 1);
         }
+    }
 
+    public boolean deleteOffense(Long id) {
+        int kyCd = -1;
+        boolean removed = false;
+
+        for (int i = 0; i < csvRows.size(); i++) {
+            if(csvRows.get(i).getCmplntNum() == id){
+                removed = true;
+                kyCd = csvRows.get(i).getKyCd();
+                csvRows.remove(i);
+                break;
+            }
+        }
+
+        if(removed) {
+            writeToCsv();
+
+            if(offenseTypeTotals.containsKey(kyCd)){
+                offenseTypeTotals.put(kyCd, offenseTypeTotals.get(kyCd) - 1);
+                if(offenseTypeTotals.get(kyCd) == 0){
+                    offenseTypeTotals.remove(kyCd);
+                }
+            }
+        }
+
+        return removed;
+    }
+
+    private synchronized void writeToCsv() {
         try (Writer writer = Files.newBufferedWriter(Paths.get("src\\sample.csv"))) {
             StatefulBeanToCsv<Complaint> beanToCsv = new StatefulBeanToCsvBuilder(writer)
                     .withEscapechar(CSVWriter.DEFAULT_ESCAPE_CHARACTER)
@@ -97,4 +138,5 @@ public class CsvReader {
             e.printStackTrace();
         }
     }
+
 }
