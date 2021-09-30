@@ -21,12 +21,11 @@ import java.util.Map;
 
 public class CsvReader {
 
-    public static CsvReader reader = null;
+    private static CsvReader reader = null;
 
     private List<Complaint> csvRows;
     private Map<Integer, Integer> offenseTypeTotals;
     private String filePath;
-    private String[] headers;
 
     private CsvReader(String path) {
         this.filePath = path;
@@ -75,23 +74,32 @@ public class CsvReader {
         return offenseTypeTotals;
     }
 
-    public void addRow(String cmplntNum, String kyCd) {
-        long complaintNumber = Long.parseLong(cmplntNum);
-        int ky = Integer.parseInt(kyCd);
+    public void addRow(String cmplntNum, String kyCd) throws NumberFormatException {
+        long complaintNumber = -1L;
+        int ky = -1;
 
-        Complaint newComplaint = new Complaint();
-        newComplaint.setCmplntNum(complaintNumber);
-        newComplaint.setKyCd(ky);
-
-        csvRows.add(newComplaint);
-
-        writeToCsv();
-
-        if(offenseTypeTotals.containsKey(ky)){
-            offenseTypeTotals.put(ky, offenseTypeTotals.get(ky) + 1);
+        try {
+            complaintNumber = Long.parseLong(cmplntNum);
+            ky = Integer.parseInt(kyCd);
         }
-        else{
-            offenseTypeTotals.put(ky, 1);
+        catch (NumberFormatException e){
+            e.printStackTrace();
+        }
+
+        if(complaintNumber != -1 && ky != -1) {
+            Complaint newComplaint = new Complaint();
+            newComplaint.setCmplntNum(complaintNumber);
+            newComplaint.setKyCd(ky);
+
+            csvRows.add(newComplaint);
+
+            writeToCsv();
+
+            if (offenseTypeTotals.containsKey(ky)) {
+                offenseTypeTotals.put(ky, offenseTypeTotals.get(ky) + 1);
+            } else {
+                offenseTypeTotals.put(ky, 1);
+            }
         }
     }
 
@@ -123,7 +131,7 @@ public class CsvReader {
     }
 
     private synchronized void writeToCsv() {
-        try (Writer writer = Files.newBufferedWriter(Paths.get("src\\sample.csv"))) {
+        try (Writer writer = Files.newBufferedWriter(Paths.get(filePath))) {
             StatefulBeanToCsv<Complaint> beanToCsv = new StatefulBeanToCsvBuilder(writer)
                     .withEscapechar(CSVWriter.DEFAULT_ESCAPE_CHARACTER)
                     .build();

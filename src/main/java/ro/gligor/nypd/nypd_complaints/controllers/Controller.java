@@ -12,7 +12,7 @@ import java.util.Map;
 @RestController
 public class Controller {
 
-    private CsvReader csvHandler = CsvReader.getInstance("src\\Book1.csv");
+    private CsvReader csvHandler = CsvReader.getInstance("src\\test\\java\\test.csv");
 
     @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping("dataset/stats/total")
