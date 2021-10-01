@@ -2,17 +2,27 @@ package ro.gligor.nypd.nypd_complaints.controllers;
 
 
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ro.gligor.nypd.nypd_complaints.csvlogic.CsvReader;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.Map;
 
 @RestController
 public class Controller {
+    @Value("${csv.path}")
+    private String csvPath;
 
-    private CsvReader csvHandler = CsvReader.getInstance("src\\test\\java\\test.csv");
+    private CsvReader csvHandler;
+
+    @PostConstruct
+    private void getPath(){
+        csvHandler  = CsvReader.getInstance(csvPath);
+    }
 
     @GetMapping(produces= MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping("dataset/stats/total")
