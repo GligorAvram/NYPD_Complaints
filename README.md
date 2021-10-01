@@ -30,33 +30,31 @@ The program tracks only 23 of the fields available from the main database:\
 23	Longitude:	Longitude coordinate for Global Coordinate System, WGS 1984, decimal degrees (EPSG 4326)\
 
 
-```
-## Installation
 
-//TODO
+# Installation && Startup instructions
+To set up the program, please follow the following steps:
+1. Clone the repository
+2. Export an environment variable called CSV_PATH with the path to the CSV that will be used as a data wareouse by the program.
+3. Run the application with Maven (run "mvn spring-boot:run" from the command line while within the folder
 
 
-```
-## Usage
 
-#Startup instructions
-
-//TODO
+# Usage
 
 After running the program, the application exposes 4 endpoints for data manipulation:
 
-# GET endpoints:
+## GET endpoints:
 •	dataset/stats/total – responds with a JSON that displays the total number of offenses
-•	dataset/stats/offenses – rasponds with a JSON that displays the number of offenses categorized by their classification code (KY_CD) 
+•	dataset/stats/offenses – responds with a JSON that displays the number of offenses categorized by their classification code (KY_CD) 
 
-# DELETE endpoints:
+## DELETE endpoints:
 •	/dataset/${id} – used for deleting an offense from the database. The ID parameter should match the complaint number (CMPLNT_NUM) of the offense in question.
 
-# POST endpoint:
+## POST endpoint:
 •	/dataset – accepts a JSON that contains the complaint number (CMPLNT_NUM) and classification code (KY_CD) of a new complaint and adds it to the end of the list of offenses
-```
 
-## Contributing
+
+# Contributing
 Pull requests are welcome. For any changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.

@@ -23,9 +23,9 @@ public class CsvReader {
 
     private static CsvReader reader = null;
 
-    private List<Complaint> csvRows;
-    private Map<Integer, Integer> offenseTypeTotals;
-    private String filePath;
+    private final List<Complaint> csvRows;
+    private final Map<Integer, Integer> offenseTypeTotals;
+    private final String filePath;
 
     private CsvReader(String path) {
         this.filePath = path;
